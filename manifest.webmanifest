@@ -1,0 +1,12 @@
+{
+  "name": "Wielka Pętla Trzech Sanktuariów",
+  "short_name": "Pętla Sanktuariów",
+  "description": "Plan, mapa i nawigacja pielgrzymki Kochłowice – Jasna Góra – Łagiewniki – Kochłowice.",
+  "lang": "pl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#1e3a8a",
+  "icons": [{ "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

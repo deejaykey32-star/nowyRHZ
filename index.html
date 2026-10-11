@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pętla Trzech Sanktuariów</title>
+  <meta name="description" content="15-dniowa pielgrzymka na wózku: Kochłowice – Jasna Góra – Łagiewniki – Kochłowice. Plan, mapa Mapy.com i nawigacja.">
+  <meta name="theme-color" content="#1e3a8a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img class="brand-icon" src="img/icon.svg" alt="" width="40" height="40">
+      <div>
+        <h1 id="title">Wielka Pętla Trzech Sanktuariów</h1>
+        <p id="subtitle" class="muted"></p>
+      </div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel" id="panel">
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="plan" aria-selected="true">Plan</button>
+        <button role="tab" data-tab="today">Dziś</button>
+        <button role="tab" data-tab="logistics">Logistyka</button>
+        <button role="tab" data-tab="spirit">Duchowość</button>
+        <button role="tab" data-tab="settings">Ustawienia</button>
+      </nav>
+
+      <section class="tab" id="tab-plan">
+        <div class="progress-box">
+          <div class="progress-label"><span id="progress-text">0 / 15 dni</span><span id="progress-km"></span></div>
+          <div class="progress"><div id="progress-bar"></div></div>
+        </div>
+        <div class="chips" id="stage-filter" role="group" aria-label="Filtr etapów"></div>
+        <div id="days"></div>
+      </section>
+
+      <section class="tab" id="tab-today" hidden>
+        <div id="today"></div>
+        <div class="card">
+          <h3>Tryb pielgrzyma (GPS)</h3>
+          <p class="muted small">Śledzi Twoją pozycję, pokazuje ile zostało do noclegu i pozwala wysłać lokalizację asyście.</p>
+          <div class="btn-row">
+            <button class="btn primary" id="gps-toggle">Włącz śledzenie</button>
+            <button class="btn" id="gps-share" disabled>Wyślij moją pozycję</button>
+          </div>
+          <div id="gps-info" class="gps-info"></div>
+        </div>
+        <div class="card emergency">
+          <h3>Pilne telefony</h3>
+          <div class="btn-row">
+            <a class="btn danger" href="tel:112">📞 112 – numer alarmowy</a>
+            <a class="btn" href="tel:999">🚑 999 – pogotowie</a>
+          </div>
+          <div id="contact-links" class="btn-row"></div>
+        </div>
+      </section>
+
+      <section class="tab" id="tab-logistics" hidden>
+        <h2>Bezpieczeństwo na wózku</h2>
+        <div id="safety"></div>
+        <h2>Lista kontrolna</h2>
+        <p class="muted small">Zaznaczenia zapisują się w tej przeglądarce.</p>
+        <div id="checklist"></div>
+        <h2>Kontakty ekipy</h2>
+        <form id="contacts" class="contacts"></form>
+        <h2>Eksport i druk</h2>
+        <div class="btn-row">
+          <button class="btn" id="gpx-all">Pobierz GPX całej pętli</button>
+          <button class="btn" id="print">Drukuj plan</button>
+        </div>
+      </section>
+
+      <section class="tab" id="tab-spirit" hidden>
+        <div id="reflection"></div>
+      </section>
+
+      <section class="tab" id="tab-settings" hidden>
+        <h2>Mapa Mapy.com</h2>
+        <p class="small">Podkłady i wyznaczanie tras pochodzą z <a href="https://mapy.com" target="_blank" rel="noopener">Mapy.com</a> (dawniej Mapy.cz). Do wyświetlenia map potrzebny jest bezpłatny klucz API z <a href="https://developer.mapy.com/" target="_blank" rel="noopener">developer.mapy.com</a>. Bez klucza strona pokaże mapę OpenStreetMap, a przyciski nawigacji do Mapy.com działają zawsze.</p>
+        <label class="field">Klucz API Mapy.com
+          <input id="api-key" type="text" autocomplete="off" spellcheck="false" placeholder="wklej klucz API">
+        </label>
+        <label class="field">Profil wyznaczania trasy
+          <select id="route-type">
+            <option value="bike_road">Rower szosowy – preferuje asfalt (zalecane dla wózka)</option>
+            <option value="foot_fast">Pieszo – najkrótsza</option>
+            <option value="car_short">Drogi publiczne – najkrótsza</option>
+          </select>
+        </label>
+        <label class="field">Rok pielgrzymki
+          <input id="year" type="number" min="2025" max="2100">
+        </label>
+        <div class="btn-row">
+          <button class="btn primary" id="save-settings">Zapisz</button>
+          <button class="btn" id="clear-routes">Przelicz trasy ponownie</button>
+          <button class="btn danger-outline" id="reset-progress">Wyzeruj postęp</button>
+        </div>
+        <p class="muted small">Punkty trasy są orientacyjne. Na odcinkach dróg lokalnych zawsze weryfikujcie przejezdność na miejscu.</p>
+      </section>
+    </aside>
+
+    <main class="map-wrap">
+      <div id="map" aria-label="Mapa trasy pielgrzymki"></div>
+      <div class="map-tools">
+        <button class="map-btn" id="fit-all" title="Pokaż całą pętlę">⤢ Cała pętla</button>
+        <button class="map-btn" id="locate" title="Pokaż moją pozycję">◎ Gdzie jestem</button>
+      </div>
+      <div class="key-banner" id="key-banner" hidden>
+        Mapa zastępcza (OpenStreetMap). <button class="link" data-goto="settings">Dodaj klucz Mapy.com</button>, aby włączyć podkłady Mapy.com i dokładne trasy.
+      </div>
+    </main>
+  </div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
